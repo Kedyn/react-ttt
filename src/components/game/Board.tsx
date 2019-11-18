@@ -17,16 +17,17 @@ export default class Board extends React.Component<IBoardProps, IBoardState> {
 
   public render(): React.ReactNode {
     const { squares } = this.props;
-    const squares_per_row = Math.sqrt(squares.length);
+
+    const squares_per_row: number = Math.sqrt(squares.length);
 
     let content: Array<React.ReactNode> = [];
 
     for (
-      let start_index = 0;
+      let start_index: number = 0;
       start_index < squares.length;
       start_index += squares_per_row
     ) {
-      const current_squares = squares.slice(
+      const current_squares: Array<string> = squares.slice(
         start_index,
         start_index + squares_per_row
       );

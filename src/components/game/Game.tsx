@@ -1,8 +1,10 @@
 import * as React from "react";
-import { calculateWinner } from "../tools/tttWinner";
+import { calculateWinner } from "../../tools/tttWinner";
 import Board from "./Board";
 
-export interface IGameProps {}
+export interface IGameProps {
+  boardSize: number;
+}
 
 export interface ISquareObjects {
   squares: Array<string>;
@@ -21,7 +23,7 @@ export default class Game extends React.Component<IGameProps, IGameState> {
     this.state = {
       history: [
         {
-          squares: Array(16).fill(null)
+          squares: Array(props.boardSize).fill(null)
         }
       ],
       stepNumber: 0,
@@ -30,9 +32,12 @@ export default class Game extends React.Component<IGameProps, IGameState> {
   }
 
   public handleClick(i: number): void {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    const history: Array<ISquareObjects> = this.state.history.slice(
+      0,
+      this.state.stepNumber + 1
+    );
+    const current: ISquareObjects = history[history.length - 1];
+    const squares: Array<string> = current.squares.slice();
 
     if (calculateWinner(squares) || squares[i]) {
       return;
@@ -59,12 +64,13 @@ export default class Game extends React.Component<IGameProps, IGameState> {
   }
 
   public render(): React.ReactNode {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const history: Array<ISquareObjects> = this.state.history;
+    const current: ISquareObjects = history[this.state.stepNumber];
+    const winner: string = calculateWinner(current.squares);
 
-    const moves = history.map((step, move) => {
+    const moves: React.ReactNode = history.map((step, move) => {
       const desc = move ? "Go to move #" + move : "Go to game start";
+
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -77,7 +83,11 @@ export default class Game extends React.Component<IGameProps, IGameState> {
     if (winner) {
       status = "Winner: " + winner;
     } else {
-      status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      if (current.squares.filter(value => value === null).length) {
+        status = "Next player: " + (this.state.xIsNext ? "X" : "O");
+      } else {
+        status = "It's a tie... refresh the page to untie it.";
+      }
     }
 
     return (
