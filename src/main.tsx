@@ -8,6 +8,7 @@ export interface IAppProps {}
 export interface IAppState {
   view: string;
   size: number;
+  ai: boolean;
 }
 
 class App extends React.Component<IAppProps, IAppState> {
@@ -16,19 +17,38 @@ class App extends React.Component<IAppProps, IAppState> {
 
     this.state = {
       view: "intro",
-      size: 9
+      size: 9,
+      ai: false
     };
   }
 
-  public handleChangeView = (dimension: number): void => {
-    this.setState({ view: "game", size: dimension * dimension });
-  };
+  public handleChangeView(dimension: number = 3, ai: boolean = false): void {
+    this.setState(state => {
+      return {
+        view: state.view === "game" ? "intro" : "game",
+        size: dimension * dimension,
+        ai: ai
+      };
+    });
+  }
 
   public render(): React.ReactNode {
     if (this.state.view == "intro") {
-      return <Intro onChange={this.handleChangeView} />;
+      return (
+        <Intro
+          onChangeScreen={(dimension, ai) =>
+            this.handleChangeView(dimension, ai)
+          }
+        />
+      );
     } else {
-      return <Game boardSize={this.state.size} />;
+      return (
+        <Game
+          boardSize={this.state.size}
+          ai={this.state.ai}
+          onChangeScreen={() => this.handleChangeView()}
+        />
+      );
     }
   }
 }

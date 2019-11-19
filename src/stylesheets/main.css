@@ -43,6 +43,10 @@ ul {
   outline: none;
 }
 
+.win {
+  background: red !important;
+}
+
 .kbd-navigation .square:focus {
   background: #ddd;
 }

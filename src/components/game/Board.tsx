@@ -4,6 +4,7 @@ import Square from "./Square";
 export interface IBoardProps {
   squares: Array<string>;
   onClick(i: number): void;
+  winningIndices: Array<number>;
 }
 
 export interface IBoardState {}
@@ -16,31 +17,32 @@ export default class Board extends React.Component<IBoardProps, IBoardState> {
   }
 
   public render(): React.ReactNode {
-    const { squares } = this.props;
+    const { squares, winningIndices } = this.props;
 
     const squares_per_row: number = Math.sqrt(squares.length);
 
     let content: Array<React.ReactNode> = [];
 
-    for (
-      let start_index: number = 0;
-      start_index < squares.length;
-      start_index += squares_per_row
-    ) {
-      const current_squares: Array<string> = squares.slice(
-        start_index,
-        start_index + squares_per_row
-      );
+    for (let row: number = 0; row < squares_per_row; row++) {
+      let row_content: Array<React.ReactNode> = [];
+
+      for (let col: number = 0; col < squares_per_row; col++) {
+        const index: number = row * squares_per_row + col;
+        const is_winner: boolean = winningIndices.includes(index);
+
+        row_content.push(
+          <Square
+            key={index}
+            value={squares[index]}
+            onClick={() => this.props.onClick(index)}
+            winner={is_winner}
+          />
+        );
+      }
 
       content.push(
-        <div key={start_index} className="board-row">
-          {current_squares.map((square, index) => (
-            <Square
-              key={start_index + index}
-              value={square}
-              onClick={() => this.props.onClick(start_index + index)}
-            />
-          ))}
+        <div key={row} className="board-row">
+          {row_content}
         </div>
       );
     }

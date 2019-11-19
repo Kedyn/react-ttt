@@ -3,6 +3,7 @@ import * as React from "react";
 export interface ISquareProps {
   onClick(): void;
   value: string;
+  winner: boolean;
 }
 
 export interface ISquareState {}
@@ -18,8 +19,12 @@ export default class Square extends React.Component<
   }
 
   public render(): React.ReactNode {
+    let class_name = "square";
+
+    if (this.props.winner) class_name += " win";
+
     return (
-      <button className="square" onClick={this.props.onClick}>
+      <button className={class_name} onClick={this.props.onClick}>
         {this.props.value}
       </button>
     );

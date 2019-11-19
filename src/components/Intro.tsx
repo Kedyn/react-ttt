@@ -1,11 +1,12 @@
 import * as React from "react";
 
 export interface IIntroProps {
-  onChange(size: number): void;
+  onChangeScreen(dimension: number, ai: boolean): void;
 }
 
 export interface IIntroState {
-  size: string;
+  dimension: string;
+  ai: boolean;
 }
 
 export default class Intro extends React.Component<IIntroProps, IIntroState> {
@@ -13,18 +14,25 @@ export default class Intro extends React.Component<IIntroProps, IIntroState> {
     super(props);
 
     this.state = {
-      size: "3"
+      dimension: "3",
+      ai: false
     };
   }
 
-  public handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    this.setState({ size: event.target.value });
-  };
+  public handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    this.setState({ dimension: event.target.value });
+  }
+
+  public handleInputChange() {
+    this.setState(state => {
+      return { ai: !state.ai };
+    });
+  }
 
   public handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
-    this.props.onChange(parseInt(this.state.size));
+    this.props.onChangeScreen(parseInt(this.state.dimension), this.state.ai);
   };
 
   public render() {
@@ -39,9 +47,21 @@ export default class Intro extends React.Component<IIntroProps, IIntroState> {
             <input
               type="number"
               min="3"
-              value={this.state.size}
-              onChange={this.handleChange}
+              value={this.state.dimension}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                this.handleChange(event)
+              }
             />
+          </label>
+          <br />
+          <label>
+            <input
+              name="isGoing"
+              type="checkbox"
+              checked={this.state.ai}
+              onChange={() => this.handleInputChange()}
+            />
+            Play against AI
           </label>
           <br />
           <input type="submit" value="Play" />
