@@ -100,7 +100,7 @@ export default class Game extends React.Component<IGameProps, IGameState> {
 
   public render(): React.ReactNode {
     const { history, stepNumber, order } = this.state;
-    const { onChangeScreen, boardSize } = this.props;
+    const { onChangeScreen, boardSize, ai } = this.props;
 
     const current: ISquareObjects = history[stepNumber];
     const winning_conditions: IWinner = calculateWinner(current.squares);
@@ -176,16 +176,16 @@ export default class Game extends React.Component<IGameProps, IGameState> {
           />
         </div>
         <div className="game-info">
-          {boardSize > 9 && (
-            <div>
-              Because the grid is too big, the AI can only look 2 steps ahead...
-              gl hf!
-            </div>
-          )}
           <div>{status}</div>
           <button onClick={() => this.changeOrder()}>{order}</button>
           <ol>{moves}</ol>
         </div>
+        {boardSize > 9 && ai && (
+          <div>
+            Because the grid is too big, the AI can only look 2 steps ahead...
+            gl hf!
+          </div>
+        )}
       </div>
     );
   }
